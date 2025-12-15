@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KTM Bookings</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- Auth View: Login -->
+        <section id="login-view" class="view">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <h1>Welcome Back</h1>
+                    <p>Sign in to continue</p>
+                </div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="login-email" placeholder="hello@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="primary-btn">Sign In</button>
+                </form>
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="#" onclick="app.showView('signup')">Sign Up</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Auth View: Sign Up -->
+        <section id="signup-view" class="view hidden">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <h1>Create Account</h1>
+                    <p>Join us to book appointments</p>
+                </div>
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signup-name" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="signup-email" placeholder="hello@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signup-password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="primary-btn">Sign Up</button>
+                </form>
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="#" onclick="app.showView('login')">Sign In</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main App Content (Initially Hidden) -->
+        <div id="authenticated-app" class="hidden">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-content">
+                    <div class="user-greeting">
+                        <span class="greeting-text">Hello,</span>
+                        <h1 class="app-title" id="user-display-name">Guest</h1>
+                    </div>
+                    <div class="profile-icon" onclick="app.logout()">
+                        <i class="fa-solid fa-right-from-bracket" style="color: white; font-size: 20px;"></i>
+                    </div>
+                </div>
+                <!-- Search Bar -->
+                <div class="search-bar-container">
+                    <i class="fa-solid fa-search search-icon"></i>
+                    <input type="text" placeholder="Search hospital, saloon..." class="search-input" id="search-input">
+                </div>
+            </header>
+
+            <!-- Edit Profile Modal -->
+            <div id="edit-profile-modal" class="modal hidden">
+                <div class="modal-content">
+                    <h3>Edit Profile</h3>
+                    <form id="edit-profile-form">
+                        <div class="form-group">
+                            <label>Display Name</label>
+                            <input type="text" id="edit-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="edit-email" required>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="secondary-btn" onclick="app.closeModal()">Cancel</button>
+                            <button type="submit" class="primary-btn">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <main id="main-content">
+
+                <!-- Categories Section -->
+                <section id="categories-view" class="active-view">
+                    <div class="section-header">
+                        <h2>Categories</h2>
+                    </div>
+                    <div class="categories-grid">
+                        <div class="category-card" onclick="app.showCategory('hospital')">
+                            <div class="icon-box hospital-bg">
+                                <i class="fa-solid fa-hospital"></i>
+                            </div>
+                            <span>Hospital</span>
+                        </div>
+                        <div class="category-card" onclick="app.showCategory('dental')">
+                            <div class="icon-box dental-bg">
+                                <i class="fa-solid fa-tooth"></i>
+                            </div>
+                            <span>Dental</span>
+                        </div>
+                        <div class="category-card" onclick="app.showCategory('saloon')">
+                            <div class="icon-box saloon-bg">
+                                <i class="fa-solid fa-scissors"></i>
+                            </div>
+                            <span>Saloon</span>
+                        </div>
+                        <div class="category-card" onclick="app.showCategory('parlour')">
+                            <div class="icon-box parlour-bg">
+                                <i class="fa-solid fa-spa"></i>
+                            </div>
+                            <span>Parlour</span>
+                        </div>
+                    </div>
+
+                    <div class="section-header">
+                        <h2>Popular Near You</h2>
+                        <a href="#" class="see-all">See All</a>
+                    </div>
+                    <div id="popular-list" class="vertical-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+
+                <!-- Listing View -->
+                <section id="listing-view" class="view hidden">
+                    <div class="view-header">
+                        <button class="back-btn" onclick="app.goBack()"><i class="fa-solid fa-arrow-left"></i></button>
+                        <h2 id="listing-title">Category</h2>
+                    </div>
+                    <div id="places-list" class="vertical-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+
+                <!-- Booking View -->
+                <section id="booking-view" class="view hidden">
+                    <div class="view-header">
+                        <button class="back-btn" onclick="app.goBack()"><i class="fa-solid fa-arrow-left"></i></button>
+                        <h2>Book Appointment</h2>
+                    </div>
+                    <div id="booking-details-container">
+                        <!-- Service details populated here -->
+                    </div>
+                    <form id="booking-form" onsubmit="app.submitBooking(event)">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" required id="book-date">
+                        </div>
+                        <div class="form-group">
+                            <label>Time</label>
+                            <select required id="book-time">
+                                <option value="">Select Time</option>
+                                <option value="10:00">10:00 AM</option>
+                                <option value="11:00">11:00 AM</option>
+                                <option value="12:00">12:00 PM</option>
+                                <option value="13:00">01:00 PM</option>
+                                <option value="14:00">02:00 PM</option>
+                                <option value="15:00">03:00 PM</option>
+                                <option value="16:00">04:00 PM</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Your Name</label>
+                            <input type="text" placeholder="John Doe" required id="book-name">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" placeholder="98XXXXXXXX" required id="book-phone">
+                        </div>
+                        <button type="submit" class="primary-btn">Confirm Booking</button>
+                    </form>
+                </section>
+
+                <!-- Success View -->
+                <section id="success-view" class="view hidden center-content">
+                    <div class="success-icon">
+                        <i class="fa-solid fa-check-circle"></i>
+                    </div>
+                    <h2>Booking Confirmed!</h2>
+                    <p>Your appointment has been successfully booked.</p>
+                    <button class="primary-btn" onclick="app.goHome()">Back to Home</button>
+                </section>
+
+                <!-- My Appointments View -->
+                <section id="appointments-view" class="view hidden">
+                    <div class="section-header">
+                        <h2>My Appointments</h2>
+                    </div>
+                    <div id="my-booking-list" class="vertical-list">
+                        <!-- Populated by JS -->
+                        <div class="empty-state">No appointments yet.</div>
+                    </div>
+                </section>
+
+                <!-- Profile View -->
+                <section id="profile-view" class="view hidden">
+                    <div class="profile-top-header">
+                        <h2>Profile</h2>
+                        <i class="fa-solid fa-gear" onclick="app.openSettings()"></i>
+                    </div>
+
+                    <div class="profile-header-new">
+                        <div class="profile-avatar-circle">
+                            <img src="https://ui-avatars.com/api/?name=User&background=D6E4FF&color=0056D2&size=128"
+                                alt="Profile" id="profile-img">
+                        </div>
+                        <h2 id="profile-name">John Doe</h2>
+                        <p id="profile-email">john.doe@example.com</p>
+                    </div>
+
+                    <div class="profile-section-title">Account Information</div>
+
+                    <div class="profile-card">
+                        <div class="profile-row">
+                            <span class="label">Full Name</span>
+                            <span class="value" id="profile-input-name">John Doe</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <div class="profile-row">
+                            <span class="label">Email Address</span>
+                            <span class="value" id="profile-input-email">john.doe@example.com</span>
+                        </div>
+                    </div>
+
+                    <div class="profile-section-title">Navigation</div>
+
+                    <div class="profile-nav-list">
+                        <div class="profile-nav-item"
+                            onclick="app.navTo('appointments', document.querySelectorAll('.nav-item')[1])">
+                            <div class="nav-left">
+                                <i class="fa-regular fa-calendar-check"></i>
+                                <span>My Bookings</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </div>
+
+                        <div class="profile-nav-item" onclick="app.openSettings()">
+                            <div class="nav-left">
+                                <i class="fa-solid fa-gear"></i>
+                                <span>Settings</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <a href="#" class="nav-item active" onclick="app.navTo('home', this)">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="nav-item" onclick="app.navTo('appointments', this)">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Bookings</span>
+                </a>
+                <a href="#" class="nav-item" onclick="app.navTo('profile', this)">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+        </div> <!-- End authenticated-app -->
+    </div>
+
+    <!-- Scripts -->
+    <script src="data.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>
+```
